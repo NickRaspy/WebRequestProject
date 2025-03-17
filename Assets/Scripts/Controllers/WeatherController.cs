@@ -1,112 +1,60 @@
+using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 using Zenject;
+using Cifkor_TA.Services;
+using Cifkor_TA.Views;
+using UnityEngine.Events;
 
-[Serializable]
-public class WeatherResponse
+namespace Cifkor_TA.Controllers
 {
-    public WeatherProperties properties;
-}
-
-[Serializable]
-public class WeatherProperties
-{
-    public WeatherPeriod[] periods;
-}
-
-[Serializable]
-public class WeatherPeriod
-{
-    public string name;
-    public int temperature;
-    public string temperatureUnit;
-    public string icon;
-}
-
-public class WeatherController : MonoBehaviour
-{
-    [Inject] private RequestQueue _requestQueue;
-
-    // Флаг активности вкладки
-    private bool _isActive = false;
-    // Источник отмены для периодического опроса
-    private CancellationTokenSource _periodicCts;
-
-    // Метод, вызываемый при активации вкладки "Погода"
-    public void Activate()
+    public class WeatherController : BaseController
     {
-        _isActive = true;
-        _periodicCts = new CancellationTokenSource();
-        TaskLoop(_periodicCts.Token).Forget();
-    }
+        [Inject] private WeatherService weatherService;
 
-    // Метод, вызываемый при деактивации вкладки "Погода"
-    public void Deactivate()
-    {
-        _isActive = false;
-        _periodicCts?.Cancel();
-        _requestQueue.CancelRequestsOfType(RequestType.Weather);
-    }
+        // ������ �� View ���������, ���������� �� ���������� UI ������
+        [SerializeField] private WeatherView weatherView;
 
-    // Цикл постановки запросов в очередь с интервалом 5 секунд
-    private async UniTaskVoid TaskLoop(CancellationToken token)
-    {
-        while (_isActive && !token.IsCancellationRequested)
+        private bool isActive = false;
+        private CancellationTokenSource periodicCts;
+
+        public override UnityAction OnDataLoad { get; set; }
+
+        public override void Activate()
         {
-            _requestQueue.Enqueue(new RequestTask(RequestType.Weather, FetchWeather));
-            await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: token);
+            weatherView.Show();
+            isActive = true;
+            periodicCts = new CancellationTokenSource();
+            WeatherUpdateLoop(periodicCts.Token).Forget();
         }
-    }
 
-    // Выполнение запроса погоды с разбором JSON-ответа
-    private async UniTask FetchWeather(CancellationToken token)
-    {
-        string url = "https://api.weather.gov/gridpoints/TOP/32,81/forecast";
-        using (UnityWebRequest uwr = UnityWebRequest.Get(url))
+        public override void Deactivate()
         {
-            var asyncOp = uwr.SendWebRequest();
-            while (!asyncOp.isDone)
+            isActive = false;
+            periodicCts?.Cancel();
+            weatherView.Hide();
+        }
+
+        private async UniTaskVoid WeatherUpdateLoop(CancellationToken token)
+        {
+            while (isActive && !token.IsCancellationRequested)
             {
-                if (token.IsCancellationRequested)
+                WeatherPeriod period = await weatherService.GetCurrentWeatherAsync(token);
+                if (period != null)
                 {
-                    uwr.Abort();
-                    token.ThrowIfCancellationRequested();
-                }
-                await UniTask.Yield();
-            }
-#if UNITY_2020_1_OR_NEWER
-            if (uwr.result != UnityWebRequest.Result.Success)
-#else
-            if (uwr.isNetworkError || uwr.isHttpError)
-#endif
-            {
-                Debug.LogError("Ошибка получения погоды: " + uwr.error);
-            }
-            else
-            {
-                try
-                {
-                    // Разбор JSON-ответа с использованием JsonUtility
-                    WeatherResponse response = JsonUtility.FromJson<WeatherResponse>(uwr.downloadHandler.text);
-                    if (response != null && response.properties != null && response.properties.periods != null && response.properties.periods.Length > 0)
+                    if (weatherView != null)
                     {
-                        // Выбираем первый период (например, текущая погода)
-                        WeatherPeriod period = response.properties.periods[0];
-                        Debug.Log($"Иконка: {period.icon} | {period.name} - {period.temperature}{period.temperatureUnit}");
-                        // Здесь можно обновлять UI, например, устанавливая текст "Сегодня - 61F" и соответствующую иконку
+                        // �������� ������ ������������� ��� ���������� UI
+                        await weatherView.UpdateWeatherUI(period, weatherService, token);
+                        OnDataLoad.Invoke();
                     }
                     else
                     {
-                        Debug.LogWarning("Не удалось разобрать данные погоды");
+                        Debug.LogWarning("weatherView �� �������� � Inspector.");
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.LogError("Ошибка при разборе JSON погоды: " + ex.Message);
-                }
+                await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: token);
             }
         }
     }

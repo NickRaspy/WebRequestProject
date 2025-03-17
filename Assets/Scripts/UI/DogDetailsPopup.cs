@@ -1,57 +1,57 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Zenject;
 using DG.Tweening;
 
-public class DogDetailsPopup : MonoBehaviour
+namespace Cifkor_TA.UI
 {
-    public Text titleText;
-    public Text descriptionText;
-    public Button closeButton;
-    public RectTransform contentRect;
-
-    // Параметры анимации
-    public float animationDuration = 0.3f;
-    public float padding = 20f; // отступ для вычисления итоговой высоты
-
-    private float initialHeight;
-
-    private void Awake()
+    public class DogDetailsPopup : MonoBehaviour
     {
-        if (closeButton != null)
-            closeButton.onClick.AddListener(Hide);
+        public TMP_Text titleText;
+        public TMP_Text descriptionText;
+        public Button closeButton;
+        public CanvasGroup canvasGroup;
+        public float animationDuration = 0.3f;
 
-        // Сохраняем исходную высоту, чтобы можно было её восстановить при закрытии попапа
-        initialHeight = contentRect.sizeDelta.y;
-        // Начальное состояние окна – скрытое
-        gameObject.SetActive(false);
+        private void Awake()
+        {
+            if (closeButton != null)
+                closeButton.onClick.AddListener(Hide);
+
+            if (canvasGroup == null)
+            {
+                canvasGroup = GetComponent<CanvasGroup>();
+                if (canvasGroup == null)
+                    canvasGroup = gameObject.AddComponent<CanvasGroup>();
+            }
+
+            canvasGroup.alpha = 0f;
+            gameObject.SetActive(false);
+        }
+
+        public void Show(string breedName, string breedDescription)
+        {
+            transform.SetAsLastSibling();
+            gameObject.SetActive(true);
+            Canvas.ForceUpdateCanvases();
+
+            if (titleText != null)
+                titleText.text = breedName;
+            if (descriptionText != null)
+                descriptionText.text = breedDescription;
+
+            DOTween.Kill(canvasGroup);
+            canvasGroup.alpha = 0f;
+            canvasGroup.DOFade(1f, animationDuration);
+        }
+
+        public void Hide()
+        {
+            DOTween.Kill(canvasGroup);
+            canvasGroup.DOFade(0f, animationDuration).OnComplete(() =>
+            {
+                gameObject.SetActive(false);
+            });
+        }
     }
-
-    public void Show(string breedName, string breedDescription)
-    {
-        gameObject.SetActive(true);
-
-        if (titleText != null)
-            titleText.text = breedName;
-        if (descriptionText != null)
-            descriptionText.text = breedDescription;
-
-        // Вычисляем предпочтительную высоту для каждого текстового элемента
-        float titleHeight = titleText != null ? LayoutUtility.GetPreferredHeight(titleText.rectTransform) : 0f;
-        float descriptionHeight = descriptionText != null ? LayoutUtility.GetPreferredHeight(descriptionText.rectTransform) : 0f;
-
-        float targetHeight = titleHeight + descriptionHeight + padding;
-
-        // Анимируем изменение высоты contentRect к рассчитанной высоте
-        contentRect.DOSizeDelta(new Vector2(contentRect.sizeDelta.x, targetHeight), animationDuration);
-    }
-
-    public void Hide()
-    {
-        // Анимируем возвращение к исходной высоте, после чего отключаем окно
-        contentRect.DOSizeDelta(new Vector2(contentRect.sizeDelta.x, initialHeight), animationDuration)
-            .OnComplete(() => gameObject.SetActive(false));
-    }
-
-    public class Factory : PlaceholderFactory<DogDetailsPopup> { }
 }
