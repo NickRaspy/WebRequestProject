@@ -29,10 +29,7 @@ namespace Cifkor_TA.Web
 
         public void Cancel()
         {
-            if (!Cts.IsCancellationRequested)
-            {
-                Cts.Cancel();
-            }
+            if (!Cts.IsCancellationRequested) Cts.Cancel();
         }
     }
 }

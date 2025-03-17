@@ -7,10 +7,7 @@ namespace Cifkor_TA.Controllers
 {
     public class ControllerManager : MonoBehaviour
     {
-        [Inject]
-        private List<IController> _controllers;
-
-        private IController _currentController;
+        private IController currentController;
 
         [SerializeField] private GameObject startScreen;
 
@@ -24,9 +21,9 @@ namespace Cifkor_TA.Controllers
                 return;
             }
 
-            if (_currentController == newController) return;
+            if (currentController == newController) return;
 
-            if (_currentController != null) _currentController.OnDataLoad -= DisableLoadingScreen;
+            if (currentController != null) currentController.OnDataLoad -= DisableLoadingScreen;
 
             newController.OnDataLoad += DisableLoadingScreen;
 
@@ -34,10 +31,10 @@ namespace Cifkor_TA.Controllers
 
             loadingScreen.SetActive(true);
 
-            _currentController?.Deactivate();
+            currentController?.Deactivate();
 
-            _currentController = newController;
-            _currentController.Activate();
+            currentController = newController;
+            currentController.Activate();
         }
 
         void DisableLoadingScreen() => loadingScreen.SetActive(false);

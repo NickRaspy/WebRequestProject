@@ -13,10 +13,10 @@ namespace Cifkor_TA.Controllers
     {
         [Inject] private WeatherService weatherService;
 
-        // —сылка на View компонент, отвечающий за обновление UI погоды
         [SerializeField] private WeatherView weatherView;
 
         private bool isActive = false;
+
         private CancellationTokenSource periodicCts;
 
         public override UnityAction OnDataLoad { get; set; }
@@ -45,14 +45,11 @@ namespace Cifkor_TA.Controllers
                 {
                     if (weatherView != null)
                     {
-                        // ѕередаем данные представлению дл€ обновлени€ UI
                         await weatherView.UpdateWeatherUI(period, weatherService, token);
                         OnDataLoad.Invoke();
                     }
                     else
-                    {
-                        Debug.LogWarning("weatherView не назначен в Inspector.");
-                    }
+                        Debug.LogError("weatherView isn't selected Inspector.");
                 }
                 await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: token);
             }

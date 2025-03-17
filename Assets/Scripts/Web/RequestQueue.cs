@@ -1,74 +1,94 @@
+
 using Cifkor_TA.Interfaces;
+using Cifkor_TA.UI;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using Zenject;
 
 namespace Cifkor_TA.Web
 {
     public class RequestQueue : MonoBehaviour
     {
-        private readonly Queue<IAsyncRequest> _queue = new();
-        private bool _isProcessing = false;
-        private IAsyncRequest _currentTask;
+        private readonly Queue<IAsyncRequest> queue = new();
+        private bool isProcessing = false;
+        private IAsyncRequest currentTask;
+
+        [Inject] private ErrorMessage errorMessage;
+
+        [SerializeField]
+        private float defaultTimeout = 5f;
+
+        private CancellationTokenSource _currentManualCts;
 
         public void Enqueue(IAsyncRequest requestTask)
         {
-            _queue.Enqueue(requestTask);
-            if (!_isProcessing)
-            {
-                ProcessQueue().Forget();
-            }
+            queue.Enqueue(requestTask);
+            if (!isProcessing) ProcessQueue().Forget();
         }
 
         public void CancelRequestsOfType(RequestType type)
         {
-            if (_currentTask != null && _currentTask.Type == type)
+            if (currentTask != null && currentTask.Type == type)
             {
-                _currentTask.Cancel();
+                currentTask.Cancel();
+                _currentManualCts?.Cancel();
             }
 
             var newQueue = new Queue<IAsyncRequest>();
-            while (_queue.Count > 0)
+
+            while (queue.Count > 0)
             {
-                var task = _queue.Dequeue();
+                var task = queue.Dequeue();
                 if (task.Type == type)
-                {
                     task.Cancel();
-                }
                 else
-                {
                     newQueue.Enqueue(task);
-                }
             }
+
             while (newQueue.Count > 0)
-            {
-                _queue.Enqueue(newQueue.Dequeue());
-            }
+                queue.Enqueue(newQueue.Dequeue());
         }
 
         private async UniTaskVoid ProcessQueue()
         {
-            _isProcessing = true;
-            while (_queue.Count > 0)
+            isProcessing = true;
+            while (queue.Count > 0)
             {
-                _currentTask = _queue.Dequeue();
-                try
+                currentTask = queue.Dequeue();
+
+                using (var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(defaultTimeout)))
+                using (_currentManualCts = new CancellationTokenSource())
+                using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(timeoutCts.Token, _currentManualCts.Token))
                 {
-                    await _currentTask.Execute(CancellationToken.None);
+                    try
+                    {
+                        await currentTask.Execute(linkedCts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        if (_currentManualCts.IsCancellationRequested)
+                        {
+                            Debug.Log("Request manually cancelled: " + currentTask.Type);
+                        }
+                        else
+                        {
+                            Debug.Log("Request timed out: " + currentTask.Type);
+                            errorMessage.Show("");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Log($"Request error in ({currentTask.Type}): {ex.Message}");
+                        errorMessage.Show("");
+                    }
                 }
-                catch (OperationCanceledException)
-                {
-                    Debug.Log("Запрос отменён: " + _currentTask.Type);
-                }
-                catch (Exception ex)
-                {
-                    Debug.LogError($"Ошибка при выполнении запроса ({_currentTask.Type}): {ex.Message}");
-                }
-                _currentTask = null;
+                currentTask = null;
+                _currentManualCts = null;
             }
-            _isProcessing = false;
+            isProcessing = false;
         }
     }
 }

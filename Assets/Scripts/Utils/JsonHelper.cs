@@ -17,7 +17,6 @@ public static class JsonHelper
 
     public static T[] FromJson<T>(string json)
     {
-        // Если JSON начинается с объекта, попробуем десериализовать как объект с полем data
         if (json.TrimStart().StartsWith("{"))
         {
             try
@@ -30,7 +29,6 @@ public static class JsonHelper
             }
             catch (Exception) { }
         }
-        // Для случаев, когда JSON – чистый массив, оборачиваем его в объект с полем Items
         string newJson = "{\"Items\":" + json + "}";
         Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(newJson);
         return wrapper.Items;

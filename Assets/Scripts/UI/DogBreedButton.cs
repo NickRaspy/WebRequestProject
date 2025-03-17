@@ -2,6 +2,7 @@ using Cifkor_TA.Services;
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using Zenject;
 
@@ -17,7 +18,7 @@ namespace Cifkor_TA.UI
         public DogBreed DogBreed { get; private set; }
 
 
-        public event Action<DogBreedButton> onClick = delegate { };
+        public UnityAction onClick;
 
         private void Awake()
         {
@@ -29,8 +30,6 @@ namespace Cifkor_TA.UI
 
         private void OnEnable()
         {
-            if (button == null) button = GetComponent<Button>();
-
             button.onClick.RemoveAllListeners();
             button.onClick.AddListener(OnButtonClicked);
             button.interactable = true;
@@ -44,7 +43,7 @@ namespace Cifkor_TA.UI
 
         private void OnButtonClicked()
         {
-            onClick?.Invoke(this);
+            onClick?.Invoke();
         }
 
         public void SetLabel(string text)

@@ -1,4 +1,5 @@
 using Cifkor_TA.Controllers;
+using Cifkor_TA.UI;
 using Cifkor_TA.Web;
 using Zenject;
 
@@ -17,6 +18,10 @@ namespace Cifkor_TA.Installers
             Container.Bind<ControllerManager>()
                      .FromComponentInHierarchy()
                      .AsSingle();
+
+            Container.Bind<ErrorMessage>()
+                .FromComponentInHierarchy()
+                .AsSingle();
         }
     }
 }

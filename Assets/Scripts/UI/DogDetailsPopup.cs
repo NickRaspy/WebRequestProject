@@ -7,36 +7,31 @@ namespace Cifkor_TA.UI
 {
     public class DogDetailsPopup : MonoBehaviour
     {
-        public TMP_Text titleText;
-        public TMP_Text descriptionText;
-        public Button closeButton;
-        public CanvasGroup canvasGroup;
-        public float animationDuration = 0.3f;
+        [SerializeField] private TMP_Text titleText;
+        [SerializeField] private TMP_Text descriptionText;
+        [SerializeField] private Button closeButton;
+        [SerializeField] private CanvasGroup canvasGroup;
+        [SerializeField] private float animationDuration = 0.3f;
 
         private void Awake()
         {
             if (closeButton != null)
                 closeButton.onClick.AddListener(Hide);
+            else
+                Debug.LogError("closeButton isn't selected on Inspector");
 
-            if (canvasGroup == null)
-            {
-                canvasGroup = GetComponent<CanvasGroup>();
-                if (canvasGroup == null)
-                    canvasGroup = gameObject.AddComponent<CanvasGroup>();
-            }
+            if (!TryGetComponent<CanvasGroup>(out canvasGroup))
+                canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
-            canvasGroup.alpha = 0f;
-            gameObject.SetActive(false);
         }
 
         public void Show(string breedName, string breedDescription)
         {
-            transform.SetAsLastSibling();
             gameObject.SetActive(true);
-            Canvas.ForceUpdateCanvases();
 
             if (titleText != null)
                 titleText.text = breedName;
+
             if (descriptionText != null)
                 descriptionText.text = breedDescription;
 
