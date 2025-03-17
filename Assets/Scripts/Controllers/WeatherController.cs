@@ -15,18 +15,20 @@ namespace Cifkor_TA.Controllers
 
         [SerializeField] private WeatherView weatherView;
 
+        [SerializeField] private float updateTimeout = 5f;
+
         private bool isActive = false;
 
         private CancellationTokenSource periodicCts;
 
         public override UnityAction OnDataLoad { get; set; }
 
-        public override void Activate()
+        public async override void Activate()
         {
             weatherView.Show();
             isActive = true;
             periodicCts = new CancellationTokenSource();
-            WeatherUpdateLoop(periodicCts.Token).Forget();
+            await WeatherUpdateLoop(periodicCts.Token);
         }
 
         public override void Deactivate()
@@ -36,7 +38,7 @@ namespace Cifkor_TA.Controllers
             weatherView.Hide();
         }
 
-        private async UniTaskVoid WeatherUpdateLoop(CancellationToken token)
+        private async UniTask WeatherUpdateLoop(CancellationToken token)
         {
             while (isActive && !token.IsCancellationRequested)
             {
@@ -49,9 +51,9 @@ namespace Cifkor_TA.Controllers
                         OnDataLoad.Invoke();
                     }
                     else
-                        Debug.LogError("weatherView isn't selected Inspector.");
+                        Debug.LogError("weatherView isn't selected on Inspector.");
                 }
-                await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: token);
+                await UniTask.Delay(TimeSpan.FromSeconds(updateTimeout), cancellationToken: token);
             }
         }
     }
