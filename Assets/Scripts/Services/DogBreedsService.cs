@@ -1,15 +1,15 @@
-
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
-using Newtonsoft.Json.Linq;
 
-namespace Cifkor_TA.Services
+namespace WRP.Services
 {
     #region JSON_CLASSES
+
     [Serializable]
     public class DogBreed
     {
@@ -32,7 +32,8 @@ namespace Cifkor_TA.Services
             public string description;
         }
     }
-    #endregion
+
+    #endregion JSON_CLASSES
 
     public class DogBreedsService : BaseService
     {
@@ -88,7 +89,6 @@ namespace Cifkor_TA.Services
                             HandleError("");
                         }
 
-
                         if (breedResponses != null)
                         {
                             int count = Math.Min(10, breedResponses.Count);
@@ -114,7 +114,6 @@ namespace Cifkor_TA.Services
                             Debug.LogError("Incorrect JSON format: 'data' property not found or invalid.");
                             HandleError("");
                         }
-
                     }
                     catch (Exception ex)
                     {

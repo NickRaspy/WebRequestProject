@@ -1,13 +1,12 @@
 using System.Collections.Generic;
 using System.Threading;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Zenject;
-using Cifkor_TA.Services;
-using Cifkor_TA.Views;
 using UnityEngine.Events;
+using WRP.Services;
+using WRP.View;
+using Zenject;
 
-namespace Cifkor_TA.Controllers
+namespace WRP.Controllers
 {
     public class DogBreedsController : BaseController
     {

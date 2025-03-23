@@ -1,7 +1,7 @@
-using Cifkor_TA.Interfaces;
 using UnityEngine;
+using WRP.Interfaces;
 
-namespace Cifkor_TA.View
+namespace WRP.View
 {
     public class BaseView : MonoBehaviour, IView
     {

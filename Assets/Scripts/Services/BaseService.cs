@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Cifkor_TA.Interfaces;
+using WRP.Interfaces;
+using WRP.UI;
 using Zenject;
-using Cifkor_TA.UI;
 
-namespace Cifkor_TA.Services
+namespace WRP.Services
 {
     public class BaseService : IService
     {

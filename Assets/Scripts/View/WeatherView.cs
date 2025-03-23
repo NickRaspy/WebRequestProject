@@ -1,13 +1,11 @@
 using Cysharp.Threading.Tasks;
-using System;
 using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Cifkor_TA.Services;
-using Cifkor_TA.View;
+using WRP.Services;
 
-namespace Cifkor_TA.Views
+namespace WRP.View
 {
     public class WeatherView : BaseView
     {

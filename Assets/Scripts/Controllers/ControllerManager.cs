@@ -1,9 +1,7 @@
-using Cifkor_TA.Interfaces;
-using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
+using WRP.Interfaces;
 
-namespace Cifkor_TA.Controllers
+namespace WRP.Controllers
 {
     public class ControllerManager : MonoBehaviour
     {
@@ -37,6 +35,6 @@ namespace Cifkor_TA.Controllers
             currentController.Activate();
         }
 
-        void DisableLoadingScreen() => loadingScreen.SetActive(false);
+        private void DisableLoadingScreen() => loadingScreen.SetActive(false);
     }
 }

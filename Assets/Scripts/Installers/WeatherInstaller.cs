@@ -1,7 +1,7 @@
-﻿using Cifkor_TA.Services;
+﻿using WRP.Services;
 using Zenject;
 
-namespace Cifkor_TA.Installers
+namespace WRP.Installers
 {
     public class WeatherInstaller : MonoInstaller
     {

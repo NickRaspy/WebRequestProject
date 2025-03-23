@@ -1,9 +1,8 @@
-using Cifkor_TA.Interfaces;
-using Cifkor_TA.View;
 using UnityEngine;
 using UnityEngine.Events;
+using WRP.Interfaces;
 
-namespace Cifkor_TA.Controllers
+namespace WRP.Controllers
 {
     public abstract class BaseController : MonoBehaviour, IController
     {

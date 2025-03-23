@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Cifkor_TA.Services;
-using Cifkor_TA.UI;
+using WRP.Services;
+using WRP.UI;
 using Zenject;
 
-namespace Cifkor_TA.Views
+namespace WRP.View
 {
     public class DogBreedsView : MonoBehaviour
     {
@@ -48,7 +48,6 @@ namespace Cifkor_TA.Views
         {
             if (dogDetailsPopup != null)
                 dogDetailsPopup.Show(breedName, breedDescription);
-
             else
                 Debug.LogError("dogDetailsPopup isn't selected on Inspector");
         }

@@ -1,12 +1,11 @@
-using Cifkor_TA.Services;
-using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using WRP.Services;
 using Zenject;
 
-namespace Cifkor_TA.UI
+namespace WRP.UI
 {
     [RequireComponent(typeof(Button))]
     public class DogBreedButton : MonoBehaviour
@@ -16,7 +15,6 @@ namespace Cifkor_TA.UI
         [SerializeField] private GameObject loadingSpinner;
 
         public DogBreed DogBreed { get; private set; }
-
 
         public UnityAction onClick;
 
@@ -62,6 +60,7 @@ namespace Cifkor_TA.UI
             }
         }
 
-        public class Factory : PlaceholderFactory<DogBreedButton> { }
+        public class Factory : PlaceholderFactory<DogBreedButton>
+        { }
     }
 }

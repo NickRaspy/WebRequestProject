@@ -1,8 +1,8 @@
-using Cifkor_TA.Web;
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using WRP.Web;
 
-namespace Cifkor_TA.Interfaces
+namespace WRP.Interfaces
 {
     public interface IAsyncRequest
     {

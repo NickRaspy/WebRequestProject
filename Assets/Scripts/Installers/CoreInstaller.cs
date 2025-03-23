@@ -1,9 +1,9 @@
-using Cifkor_TA.Controllers;
-using Cifkor_TA.UI;
-using Cifkor_TA.Web;
+using WRP.Controllers;
+using WRP.UI;
+using WRP.Web;
 using Zenject;
 
-namespace Cifkor_TA.Installers
+namespace WRP.Installers
 {
     public class CoreInstaller : MonoInstaller
     {

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 
-namespace Cifkor_TA.Controllers
+namespace WRP.Controllers
 {
     [RequireComponent(typeof(Button))]
     public class ControllerSwitcherButton : MonoBehaviour

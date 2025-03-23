@@ -1,10 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace Cifkor_TA.Interfaces
+namespace WRP.Interfaces
 {
-    public interface IService 
+    public interface IService
     {
         void HandleError(string errorCode);
     }

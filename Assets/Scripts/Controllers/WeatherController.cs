@@ -2,12 +2,12 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
-using Zenject;
-using Cifkor_TA.Services;
-using Cifkor_TA.Views;
 using UnityEngine.Events;
+using WRP.Services;
+using WRP.View;
+using Zenject;
 
-namespace Cifkor_TA.Controllers
+namespace WRP.Controllers
 {
     public class WeatherController : BaseController
     {
@@ -23,7 +23,7 @@ namespace Cifkor_TA.Controllers
 
         public override UnityAction OnDataLoad { get; set; }
 
-        public async override void Activate()
+        public override async void Activate()
         {
             weatherView.Show();
             isActive = true;

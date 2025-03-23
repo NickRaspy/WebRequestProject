@@ -5,7 +5,7 @@ using System.Threading;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Cifkor_TA.Services
+namespace WRP.Services
 {
     #region JSON_CLASSES
 
@@ -28,7 +28,8 @@ namespace Cifkor_TA.Services
         public string temperatureUnit;
         public string icon;
     }
-    #endregion
+
+    #endregion JSON_CLASSES
 
     public class WeatherService : BaseService
     {

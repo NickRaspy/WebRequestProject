@@ -1,14 +1,13 @@
-
-using Cifkor_TA.Interfaces;
-using Cifkor_TA.UI;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using WRP.Interfaces;
+using WRP.UI;
 using Zenject;
 
-namespace Cifkor_TA.Web
+namespace WRP.Web
 {
     public class RequestQueue : MonoBehaviour
     {

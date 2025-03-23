@@ -1,16 +1,15 @@
-
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 
-namespace Cifkor_TA.UI
+namespace WRP.UI
 {
     [RequireComponent(typeof(TMP_Text))]
     public class ErrorMessage : MonoBehaviour
     {
         private TMP_Text text;
 
-        const string errorText = "An error occurred.";
+        private const string errorText = "An error occurred.";
 
         private void Awake()
         {

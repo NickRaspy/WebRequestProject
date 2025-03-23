@@ -1,9 +1,9 @@
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using DG.Tweening;
 
-namespace Cifkor_TA.UI
+namespace WRP.UI
 {
     public class DogDetailsPopup : MonoBehaviour
     {
@@ -22,7 +22,6 @@ namespace Cifkor_TA.UI
 
             if (!TryGetComponent<CanvasGroup>(out canvasGroup))
                 canvasGroup = gameObject.AddComponent<CanvasGroup>();
-
         }
 
         public void Show(string breedName, string breedDescription)

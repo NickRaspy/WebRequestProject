@@ -1,9 +1,9 @@
-using Cifkor_TA.Interfaces;
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using WRP.Interfaces;
 
-namespace Cifkor_TA.Web
+namespace WRP.Web
 {
     public enum RequestType
     {

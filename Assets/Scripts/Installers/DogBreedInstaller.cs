@@ -1,9 +1,9 @@
-using Cifkor_TA.Services;
-using Cifkor_TA.UI;
 using UnityEngine;
+using WRP.Services;
+using WRP.UI;
 using Zenject;
 
-namespace Cifkor_TA.Installers
+namespace WRP.Installers
 {
     public class DogBreedInstaller : MonoInstaller
     {
